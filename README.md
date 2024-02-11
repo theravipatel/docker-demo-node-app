@@ -243,7 +243,18 @@ docker system prune
 docker system prune -a
 ```
 
-## 14) Docker - Volumes
+## 14) Docker - Mount
+- Mount is another way to give containers access to files and folders on our host.
+- We can share data between host to container without creating docker volume by directly mounting host directory to container directory.
+- Any changes made to the directory will be reflected on both sides of the mount, whether the modification originates from the host or within the container.
+- Mounts are best used for ad-hoc storage on a short-term basis.
+- Syntax:
+```
+docker run -itd --name my-node-app-c1 -p 1000:1000 -v F:\xampp\htdocs\docker-node-app:/app node
+docker exec -it my-node-app-c1 bash
+```
+
+## 15) Docker - Volumes
 - Changes made to a container's environment are lost when the container stops, crashes, or gets replaced.
 - We can Dockerize stateful applications such as databases and file servers by attaching **volumes** to our containers.
 - **Volumes** provide persistent storage that's independent of individual containers.
@@ -253,10 +264,6 @@ docker system prune -a
 - This mapping enables the container to read from or write to the volume as if it were a regular directory withing the container.
 - It is independent and can be associated with one or more containers.
 - Bind Mounts vs. Docker Volumes
-    - **Bind Mounts** are another way to give containers access to files and folders on our host.
-    - They directly mount a host directory into our container.
-    - Any changes made to the directory will be reflected on both sides of the mount, whether the modification originates from the host or within the container.
-    - Bind mounts are best used for ad-hoc storage on a short-term basis.
     - **Volumes** are a better solution when we are providing permanent storage to operational containers.
     - Because they are managed by Docker, we don't need to manually maintain directories on our host.
     - There is a less chance of data being accidentally modified and no dependency on a particular folder structure.
