@@ -317,7 +317,7 @@ docker exec -it my-node-app-c1 bash
     ```
     docker run -d --name CONTAINER_NAME -v VOLUME_NAME:/app:ro IMAGE_NAME
     ``` 
-- We can share data between host to container withour creating docker volume by directly mounting host directory to container directory.
+- We can share data between host to container without creating docker volume by directly mounting host directory to container directory.
     - Syntax:
     ```
     docker run -itd --name <CONTAINER_NAME> -p <DOCKER_HOST_PORT>:<DOCKER_CONTAINER_PORT> -v <ABSOLUTE_PATH>:<VOLUME_FOLDER> <IMAGE_NAME>
@@ -325,3 +325,20 @@ docker exec -it my-node-app-c1 bash
     ```
     docker run -itd --name mycontainer -p 1000:1000 --rm -v F:\demo\docker-demo-node-app:/app myimage
     ```
+
+## 16) Docker - Volume with Dockerfile
+- The `Volume` created from the dockerfile tells docker to create a mount point for a volume inside the container.
+```
+FROM ubuntu
+VOLUME [ "/data" ]
+```
+- It specify that the directory mentioned in the dockerfile for the volume i.e. "/data" should be treated as `Volume`. 
+- It means that any data written to or read from the "/data" directory within the container will be stored outside the container in a volume.
+- *Note that the "VOLUME" instruction in the dockerfile does not create the volume itself.*
+- It merely sets up the mount point within the container.
+- The actual volume created when we run the container and specify a volume or path using the "-v" flag.
+- Example: create dockerfile as mentioned above and run below command to create volume using the dockerfile.
+```
+docker build -t myimage
+docker run --name c1 -itd -v myvolume:/data myimage
+```
