@@ -390,3 +390,57 @@ docker run --name c1 -itd -v myvolume:/data myimage
     - `docker network connect CONTAINER_NAME NETWORK_NAME`: Connect a running container to an existing user-defined bridge.
     - `docker network disconnect CONTAINER_NAME NETWORK_NAME`: Disconnect a running container to an existing user-defined bridge.
     - `docker network rm NETWORK_NAME`: Delete specified network.
+
+## 18) Docker - Compose - Overview
+- Docker Compose is a tool for defining and running multi-container Docker applications.
+- Information describing the services and networks for an application are contained within a *YAML* file, called `docker-compose.yml`.
+- Docker Compose is used for running multiple containers as a single service.
+- Each of the containers here run in isolation but can interact with each other when required.
+- Docker Compose files are very easy to write in a scripting language called *YAML*, which is an XML-based language that stands for **Yet Another Markup Language**.
+- Another great thing about Docker Compose is that users can activate all the services (containers) using a single command.
+- Benefits of Docker Compose:
+    - Single host deployment - This means you can run everything on a single piece of hardware.
+    - Quick and easy configuration - Due to YAML scripts.
+    - High productivity - Docker Compose reduces the time it takes to perform tasks.
+    - Security - All the containers are isolated from each other, reducing the threat landscape.
+- Basic Commands in Docker Compose:
+    - `docker compose version`: It is used to check the version of Docker Compose.
+    - `docker compose --help`: Check other available commands.
+    - `docker compose up`: It will take the *docker-compose.yml* file and start building containers. It will download/pull required images and create/start required containers. If we modify *docker-compose.yml* file and again run *docker compose up* command then it will only recreate modified containers.
+    - `docker compose up -d`: It is same as *docker compose up* command but it will run in the background which means it will not occupy terminal.
+    - `docker compose ps`: It is used list currently running services.
+    - `docker compose exec my_serice_name mysql -u root -p`: It is used to get access the terminal of container. 
+    - `docker compose stop`: It is used to stop compose started using *docker compose up -d* command.
+    - `docker compose down`: It is used to remove containers entirely. It will not remove volumes.
+    - `docker compose down --volume `: It is used to remove containers entirely including volumes.
+- Other commands using *docker compose --help*:
+    - `attach`:      Attach local standard input, output, and error streams to a service's running container
+    - `build`:       Build or rebuild services
+    - `config`:      Parse, resolve and render compose file in canonical format
+    - `cp`:          Copy files/folders between a service container and the local filesystem
+    - `create`:      Creates containers for a service
+    - `down`:        Stop and remove containers, networks
+    - `events`:      Receive real time events from containers
+    - `exec`:        Execute a command in a running container
+    - `images`:      List images used by the created containers
+    - `kill`:        Force stop service containers
+    - `logs`:        View output from containers
+    - `ls`:          List running compose projects
+    - `pause`:       Pause services
+    - `port`:        Print the public port for a port binding
+    - `ps`:          List containers
+    - `pull`:        Pull service images
+    - `push`:        Push service images
+    - `restart`:     Restart service containers
+    - `rm`:          Removes stopped service containers
+    - `run`:         Run a one-off command on a service
+    - `scale`:       Scale services
+    - `start`:       Start services
+    - `stats`:       Display a live stream of container(s) resource usage statistics
+    - `stop`:        Stop services
+    - `top`:         Display the running processes
+    - `unpause`:     Unpause services
+    - `up`:          Create and start containers
+    - `version`:     Show the Docker Compose version information
+    - `wait`:        Block until the first service container stops
+    - `watch`:       Watch build context for service and rebuild/refresh containers when files are updated
