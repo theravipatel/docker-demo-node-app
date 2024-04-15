@@ -342,3 +342,51 @@ VOLUME [ "/data" ]
 docker build -t myimage
 docker run --name c1 -itd -v myvolume:/data myimage
 ```
+
+## 17) Docker - Networking
+- Docker networking is a fundamental aspect of Docker that enables communication between Docker container and external networks.
+- It allows us to connect containers together, as well as connect containers to the host machine and other external resources.
+- A container has no information about what kind of network it is attached to or whether their peers are also Docker workloads or not.
+- A container only sees a network interface with an IP address, a gateway, a routing table, DNS services and other networking details.
+- By default when we create or run a container using `docker create` or `docker run`, the container does not expose any of its ports to the outside world.
+- We can make a port available to service outside of Docker by using `--publish` or `-p` flag.
+- Network Drivers
+    - Bridge Network:
+        - Default Bridge Nework:
+            - It is good for running containers that does not require special networking capabilities.
+            - It uses a software bridge which allows containers connected to the same bridge network to communicate, while providing isolation from containers which are not connected to that bridge network.
+            - The Docker bridge driver automatically installs rules in the host machine so that containers on different bridge networks can not communicate directly with each other.
+            - It apply to containers running on the same Docker daemon host.
+            - When we start Docker, a default bridge (also called Bridge) is created automatically and newly-started containers connect to it unless otherwise specified.
+            - Containers can communicate to each others.
+            - Container and Host can communicate via Bridge.
+            - Containers can only communicate by IP address, not by container name. 
+        - User Define Bridge Network:
+            - It enable containers on the same docker host to communicate with each other.
+            - It typically defines an isolated network for multiple containers belonging to a common project or component.
+            - It is possible to achieve isolation of container.
+            - For example, C1 and C2 containers are communicates with each other and with host via Default Bridge, C3 and C4 are connected via User Defined Bridge Network (Net1) then C3 or C4 can not communicate C1 and C2 but it can communicate to Host via User Defined Bridge Network (Net1).
+            - Containers can communicate by IP address and also resolve a container name to an IP address. This capability is called `Automatic Service Discovery`. 
+    - Host Network:
+        - It shares the host's network with the container. When we use this driver, the container's network is not isolated from the host.
+    - Overlay Network:
+        - It enable communication between docker containers running on different hosts.
+        - They are particularly useful in distributed or clustered setups where containers span multiple machines.
+        - It requires a container orchestration tool, such as Docker Swarm or Kubernetes, to manage the networks across mutiple hosts.
+    - MACVLAN Network:
+        - It used when we are migrating from a VM setup or need our container to look like physical hosts on our network, each with unique MAC address.
+    - IPVLAN Network:
+        - It is similar to MACVLAN network, but does not assign unique MAC addresses to containers. We can consider to use IPVLAN Network when there is a restriction on the number of MAC addresses that can be assigned to a network interface or port.
+    - None:
+        - No networking.
+    - Network Plugins:
+        - It is 3rd party plugins which provide us network driver stacks.
+- Docker Nerwork Commands:
+    - `docker network ls`: List all networks. Bridge is the default network.
+    - `docker network inspect bridge`: Inspect bridge network to see what containers are connected to it.
+    - `docker network create --driver bridge NETWORK_NAME`: Create user defined-bridge network.
+    - `docker network inspect NETWORK_NAME`: Inspect network.
+    - `docker run --name CONTAINER_NAME -itd --network NETWORK_NAME python`: Connect container to a specified network e.g. host, user-defined bridge.
+    - `docker network connect CONTAINER_NAME NETWORK_NAME`: Connect a running container to an existing user-defined bridge.
+    - `docker network disconnect CONTAINER_NAME NETWORK_NAME`: Disconnect a running container to an existing user-defined bridge.
+    - `docker network rm NETWORK_NAME`: Delete specified network.
