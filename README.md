@@ -5,7 +5,40 @@
 - The whole idea of Docker is for developers to easily develop applications, ship them into containers which can then be deployed anywhere.
 - The official site for Docker is https://www.docker.com/ The site has all information and documentation about the Docker software.
 
-## 2) Components of Docker 
+## 2) Docker - Fundamentals
+- `Docker Client`:
+    - A Docker Client is a component used by a Docker user to interact with the Docker daemon and issue commands.
+    - These commands are based on the Docker API.
+- `Docker Architecture`:
+    - The Docker Architecture is made of layers.
+    - The bottom layer is the physical server that we use to host virtual machines. This is the same as a traditional virtualization architecture.
+    - The second layer is the Host OS, which is the base machine (i.e. Windows or Linux).
+    - Next, is the Docker Engine, which we use to run the operating system.
+    - Above that are the Apps which run as Docker containers. Those Docker Objects are made up of images and containers.
+- `Containers and Images`:
+    - The basic structure of Docker relies on images and containers. We can think of a container as an object and an image as its class.
+    - A **container** is an isolated system that holds everything required to run a specific application. It is a specific instance of an image that simulates the necessary environment.
+    - **Images** are used to start up containers. Images can be pre-built, retrieved from registries, created from already existing ones, or combined together via a common network.
+- `Dockerfiles`:
+    - Dockerfiles are how we containerize our application, or how we build a new container from an already pre-built image and add custom logic to start our application.
+    - From a Dockerfile, we use the Docker build command to create an image.
+- `Layers`:
+    - A Dockerfile works in layers. These are the building blocks of Docker.
+    - The first layer starts with the FROMkeyword and defines which pre-built image we will use to build an image.
+    - We can then define user permissions and startup scripts.
+    - In Docker, a container is an image with a readable layer built on top of a read-only layer. These layers are called intermediate images, and they are generated when we execute the commands in our Dockerfile during the build stage.
+- `Docker Registry`:
+    - Docker Registry is a centralized location for storing and distributing Docker images.
+    - The most commonly used public registry is Docker Hub, but you can also create your own private registry.
+- `Docker Daemon`:
+    - Docker Daemon runs on a host machine and manages containers, images, networks, and volumes.
+    - It receives commands from the Docker client and executes them.
+    - The Docker daemon uses Docker images to create containers.
+- `Docker Hub`:
+    - Docker Hub is a Docker Registry that provides unlimited storage for public images and offers paid plans for hosting private images.
+    - Anybody can access a public image. But to publish and access images on Docker Hub, you must create an account first.
+
+## 2.1) Components of Docker 
 - **Docker for various OS**: It allows one to run Docker containers on the various OS i.e. Windows, Linux etc.
 - **Docker Engine**: It is used for building Docker images and creating Docker containers.
 - **Docker Hub**: This is the registry which is used to host various Docker images.
