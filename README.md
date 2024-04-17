@@ -477,3 +477,71 @@ docker run --name c1 -itd -v myvolume:/data myimage
     - `version`:     Show the Docker Compose version information
     - `wait`:        Block until the first service container stops
     - `watch`:       Watch build context for service and rebuild/refresh containers when files are updated
+
+## 19) Docker - Compose - File Structure
+- Docker Compose files work by applying multiple commands that are declared within a single *docker-compose.yml* configuration file.
+
+- **Example *Without* dockerfile**:
+- We will Create **.env** file as below to use variables in *docker-compose.yaml* file. This is default environment file.
+- We can create custom environment file which can be access using `env_file` in respective service. The file name can be like *myenvfile.env*
+
+- *.env* file:
+```
+REDIS_IMAGE_TAG = 6.0.20-bookworm
+```
+
+- *mysqlconfig.env* file:
+```
+MYSQL_ROOT_PASSWORD = Test@123
+```
+
+- The basic structure of a Docker Compose YAML file looks like as below.
+- Run `docker compose up -d` / `docker compose down --volumes` to start/stop services.
+- *docker-compose.yaml* file:
+```
+version: '2'
+services:
+  webService:
+    image: "nginx"
+    ports:
+      # 8000 = Host port
+      # 80 = nginx port
+      - "8000:80"
+    networks:
+      - my_network
+    depends_on:
+      - databaseService
+      - redisService
+  redisService:
+    image: "redis:${REDIS_IMAGE_TAG}"
+    profiles:
+      - redisProfile
+    networks:
+      - my_network
+  databaseService:
+    image: mysql
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=Test@123
+    env_file:
+      - mysqlconfig.env
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
+```
+- Output:
+```
+[+] Running 2/3
+ - Network docker-demo-node-app_default            Created     17.7s
+ ✔ Container docker-demo-node-app-webService-1     Started     15.6s
+ ✔ Container docker-demo-node-app-redisService-1   Started
+```
+```
+[+] Running 3/4
+ - Network docker-demo-node-app_my_network           Created   9.5s
+ ✔ Container docker-demo-node-app-databaseService-1  Started   8.1s
+ ✔ Container docker-demo-node-app-redisService-1     Started   8.5s
+ ✔ Container docker-demo-node-app-webService-1       Started
+```

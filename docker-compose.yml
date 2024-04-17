@@ -1,0 +1,31 @@
+version: '2'
+services:
+  webService:
+    image: "nginx"
+    ports:
+      # 8000 = Host port
+      # 80 = nginx port
+      - "8000:80"
+    networks:
+      - my_network
+    depends_on:
+      - databaseService
+      - redisService
+  redisService:
+    image: "redis:${REDIS_IMAGE_TAG}"
+    profiles:
+      - redisProfile
+    networks:
+      - my_network
+  databaseService:
+    image: mysql
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=Test@123
+    env_file:
+      - mysqlconfig.env
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
