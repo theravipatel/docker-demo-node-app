@@ -1,0 +1,20 @@
+version: '2'
+services:
+  webservice:
+    # Path to dockerfile.
+    # '.' represents the current directory in which docker-compose.yml is present.
+    # build: .
+    # below is other way to write
+    build:
+      dockerfile: dockerfile
+    ports:
+      # 8000 = Host port
+      # 80 = nginx port
+      - "8000:80"
+    # Link database container to app container for reachability.
+    # Here "redisservice" is reachable from "webservice" 
+    # at the hostnames "redisservice and "rds"
+    links:
+      - "redisservice:rds"
+  redisservice:
+    image: "redis:${REDIS_IMAGE_TAG}"

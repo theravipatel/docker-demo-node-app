@@ -482,7 +482,7 @@ docker run --name c1 -itd -v myvolume:/data myimage
 - Docker Compose files work by applying multiple commands that are declared within a single *docker-compose.yml* configuration file.
 
 - **Example *Without* dockerfile**:
-- We will Create **.env** file as below to use variables in *docker-compose.yaml* file. This is default environment file.
+- We will Create **.env** file as below to use variables in *docker-compose.yml* file. This is default environment file.
 - We can create custom environment file which can be access using `env_file` in respective service. The file name can be like *myenvfile.env*
 
 - *.env* file:
@@ -497,7 +497,7 @@ MYSQL_ROOT_PASSWORD = Test@123
 
 - The basic structure of a Docker Compose YAML file looks like as below.
 - Run `docker compose up -d` / `docker compose down --volumes` to start/stop services.
-- *docker-compose.yaml* file:
+- *docker-compose.yml* file:
 ```
 version: '2'
 services:
@@ -545,3 +545,92 @@ networks:
  ✔ Container docker-demo-node-app-redisService-1     Started   8.5s
  ✔ Container docker-demo-node-app-webService-1       Started
 ```
+
+- **Example *With* dockerfile**:
+- *Dockerfile* file:
+```
+FROM nginx
+LABEL vendorl="Ravi Patel"
+WORKDIR /app
+```
+
+- Run `docker compose up -d` / `docker compose down --volumes` to start/stop services.
+- *docker-compose.yml* file:
+```
+version: '2'
+services:
+  webservice:
+    # Path to dockerfile.
+    # '.' represents the current directory in which docker-compose.yml is present.
+    # build: .
+    # below is other way to write
+    build:
+      dockerfile: dockerfile
+    ports:
+      # 8000 = Host port
+      # 80 = nginx port
+      - "8000:80"
+    # Link database container to app container for reachability.
+    # Here "redisservice" is reachable from "webservice" 
+    # at the hostnames "redisservice and "rds"
+    links:
+      - "redisservice:rds"
+  redisservice:
+    image: "redis:${REDIS_IMAGE_TAG}"
+```
+
+- Description of each keyword used above in the *docker-compose.yml* file:
+- `version: '2'`:
+    - This denotes that we are using version 2 of Docker Compose, and Docker will provide the appropriate features.
+- `services`:
+    - This section defines all the different containers we will create.
+    - In our example, we have two services, **webService** and **databaseService**.
+- `webService`:
+    - This is the name of a service. Docker Compose will create containers with the name we provide.
+- `build`:
+    - This specifies the location of our Dockerfile, and ` . ` represents the directory where the *docker-compose.yml* file is located.
+- `ports`:
+    - This is used to map the container's ports to the host machine. In our example, 8000 is exposed port which will map to service's port 5000.
+- `volumes`:
+    - This is just like the -v option for mounting disks in Docker.
+    - In our example, we attach our code files directory to the container's `./code` directory.
+    - This way, we won't have to rebuild the images if changes are made.
+- `links`:
+    - This will link one service to another.
+    - For the bridge network, we must specify which container should be accessible to which container using links.
+- `image`:
+    - If we don't have a Dockerfile and want to run a service using a pre-built image, we specify the image location using the image clause.
+    - Compose will fork a container from that image.
+- `environment`:
+    - The clause allows us to set up an environment variable in the container.
+    - This is the same as the `-e` argument in Docker when running a container.
+- `env_file`:
+    - It adds environment variables to the container based on the file content.
+    - We can define environment variables in custom *.env* file instead of writting in the *docker-compose.yml* file.
+    - We can add list of *.env* files under this attribute.
+- `profiles`:
+    - It defines a list of named profiles for the service to be enabled under. If unassigned, the service is always started but if assigned, it is only started if the profile is activated.
+- `networks`:
+    - This top-level element let us configure named networks that can be reused across multiple services.
+    - To use a network across multiple services, we must explicitly grant each service access by using the `networks:` attribute within the services top-level element.
+- `depends_on`:
+    - It expresses startup and shutdown dependencies between services.
+    - In our above example,
+        - Compose creates services in dependency order like *databaseService* and *redisService* will be created before *webService*.
+        - Compose removes services in dependency order like *webService* is removed before *databaseService* and *redisService*.
+
+- **Multiple Docker Compose Files**
+    - When we run `docker compose up -d`, by default it will run *docker-compose.yml* file.
+    - But we can create multiple docker compose files and run as per requirements i.e. for different environment like DEV, STAGING, PRODUCTION we can create docker compose for each environment.
+        - docker-compose.dev.yml
+        - docker-compose.staging.yml
+        - docker-compose.production.yml
+    - To run above docker compose file, run below command
+    ```
+    docker compose -f docker-compose.dev.yml up -d
+    ```
+
+- **Execute command inside service**
+    - Example: `docker compose exec databaseService mysql -u root -p`
+
+- **Explore other docker compose attributes at https://docs.docker.com/compose/compose-file/ .**
